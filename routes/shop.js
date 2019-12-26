@@ -27,6 +27,16 @@ router.get('/products/:id', async (req, res, next) => {
     }
 });
 
+router.post('/products', async (req, res, next) => {
+    try {
+        await db.addProduct(req.body);
+        res.send('Added successfully');
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 router.get('/categories', async (req, res, next) => {
     try {
         let results = await db.allCategories();

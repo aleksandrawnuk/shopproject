@@ -11,8 +11,9 @@ const pool = mysql.createPool({
     user: process.env.DB_USER,
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT
-})
+    port: process.env.DB_PORT,
+    multipleStatements: true
+});
 
 let shopdb = {};
 
@@ -34,6 +35,18 @@ shopdb.oneProduct = (id) => {
                 return reject(err);
             }
             return resolve(results[0]);
+        });
+    });
+};
+
+shopdb.addProduct = (prod) => {
+    return new Promise((resolve, reject) => {
+        var sql = `CALL addOrUpdateProduct(${prod.prodID}, "${prod.prodName}", "${prod.prodDesc}", ${prod.prodPrice}, ${prod.prodWeight}, ${prod.catID});`
+        pool.query(sql, [prod.prodID, prod.prodName, prod.prodDesc, prod.prodPrice, prod.prodWeight, prod.catID], (err, results) => {
+            if(err) {
+                return reject(err);
+            }
+            return resolve(results);
         });
     });
 };
