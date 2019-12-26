@@ -77,6 +77,17 @@ router.get('/orders/status/:id', async (req, res, next) => {
     }
 });
 
+router.post('/orders', async (req, res, next) => {
+    try {
+        let results = await db.addOrder(req.body);
+        res.json(results[0][0].id);
+       // res.send('Added successfully');
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 router.get('/status', async (req, res, next) => {
     try {
         let results = await db.allStatus();

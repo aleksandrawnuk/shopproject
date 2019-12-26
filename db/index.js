@@ -96,6 +96,26 @@ shopdb.oneOrderByStatus = (status_id) => {
     });
 };
 
+shopdb.addOrder = (order) => {
+    return new Promise((resolve, reject) => {
+        let sql;
+        let sqlLines = '';
+        let sqlOrder = `CALL addOrUpdateOrder(${order.orderID}, '${order.confirmDate}', ${order.statusID}, '${order.username}', '${order.email}', '${order.phonenumber}', @nextOrderID); `;
+        for (let i = 0; i < order.orderlines.productID.length; i++) {
+            let sqlOrderline = `CALL addOrderline(@nextOrderID, ${order.orderlines.productID[i]}, ${order.orderlines.quantity[i]}); `;
+            sqlLines += sqlOrderline;
+        }
+        sql = sqlOrder + sqlLines;
+        pool.query(sql, [order.orderID, order.confirmDate, order.statusID, order.username, order.email, order.phonenumber, order.orderlines.productID, order.orderlines.quantity], (err, results) => {
+            if(err) {
+                return reject(err);
+            }
+            return resolve(results);
+        });
+    });
+};
+
+
 shopdb.allStatus = () => {
     return new Promise((resolve, reject) => {
         pool.query(`SELECT * FROM status`, (err, results) => {
