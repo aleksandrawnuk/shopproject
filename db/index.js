@@ -1,12 +1,17 @@
+var dotenv = require('dotenv').config();
 const mysql = require('mysql');
+
+if (dotenv.error) {
+    throw dotenv.error
+}
 
 const pool = mysql.createPool({
     connectionLimit: 10,
-    password: '',
-    user: 'root',
-    database: 'shopdb',
-    host: 'localhost',
-    port: '3306'
+    password: process.env.DB_PASSWORD,
+    user: process.env.DB_USER,
+    database: process.env.DB_DATABASE,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT
 })
 
 let shopdb = {};

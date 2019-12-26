@@ -3,6 +3,10 @@ const db = require('../db');
 
 const router = express.Router();
 
+router.get('/', function(req, res, next) {
+    res.send('respond with a resource');
+});
+
 router.get('/products', async (req, res, next) => {
     try {
         let results = await db.allProducts();
