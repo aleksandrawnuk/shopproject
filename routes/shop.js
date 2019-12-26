@@ -37,6 +37,16 @@ router.post('/products', async (req, res, next) => {
     }
 });
 
+router.put('/products/:id', async (req, res, next) => {
+    try {
+        await db.updateProduct(req.params.id, req.body);
+        res.send('Updated successfully');
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 router.get('/categories', async (req, res, next) => {
     try {
         let results = await db.allCategories();

@@ -41,8 +41,20 @@ shopdb.oneProduct = (id) => {
 
 shopdb.addProduct = (prod) => {
     return new Promise((resolve, reject) => {
-        var sql = `CALL addOrUpdateProduct(${prod.prodID}, "${prod.prodName}", "${prod.prodDesc}", ${prod.prodPrice}, ${prod.prodWeight}, ${prod.catID});`
+        let sql = `CALL addOrUpdateProduct(${prod.prodID}, "${prod.prodName}", "${prod.prodDesc}", ${prod.prodPrice}, ${prod.prodWeight}, ${prod.catID});`
         pool.query(sql, [prod.prodID, prod.prodName, prod.prodDesc, prod.prodPrice, prod.prodWeight, prod.catID], (err, results) => {
+            if(err) {
+                return reject(err);
+            }
+            return resolve(results);
+        });
+    });
+};
+
+shopdb.updateProduct = (id, prod) => {
+    return new Promise((resolve, reject) => {
+        let sql = `CALL addOrUpdateProduct(${id}, "${prod.prodName}", "${prod.prodDesc}", ${prod.prodPrice}, ${prod.prodWeight}, ${prod.catID});`
+        pool.query(sql, [id, prod.prodName, prod.prodDesc, prod.prodPrice, prod.prodWeight, prod.catID], (err, results) => {
             if(err) {
                 return reject(err);
             }
