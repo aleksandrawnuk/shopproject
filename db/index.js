@@ -1,5 +1,6 @@
 var dotenv = require('dotenv').config();
 const mysql = require('mysql');
+let Validator = require('validatorjs');
 
 if (dotenv.error) {
     throw dotenv.error
@@ -40,15 +41,32 @@ shopdb.oneProduct = (id) => {
 };
 
 shopdb.addProduct = (prod) => {
-    return new Promise((resolve, reject) => {
-        let sql = `CALL addOrUpdateProduct(${prod.prodID}, "${prod.prodName}", "${prod.prodDesc}", ${prod.prodPrice}, ${prod.prodWeight}, ${prod.catID});`
-        pool.query(sql, [prod.prodID, prod.prodName, prod.prodDesc, prod.prodPrice, prod.prodWeight, prod.catID], (err, results) => {
-            if(err) {
-                return reject(err);
-            }
-            return resolve(results);
+    let rules = {
+        prodID: 'required',
+        prodName: 'required',
+        prodDesc: 'required',
+        prodPrice: 'min:0.01',
+        prodWeight: 'min:0.01',
+        catID: 'required'
+    };
+
+    let validation = new Validator(prod, rules);
+
+    console.log(validation.passes());
+    if(validation.fails()) {
+        throw (validation.errors)
+    } else {
+
+        return new Promise((resolve, reject) => {
+            let sql = `CALL addOrUpdateProduct(${prod.prodID}, "${prod.prodName}", "${prod.prodDesc}", ${prod.prodPrice}, ${prod.prodWeight}, ${prod.catID});`
+            pool.query(sql, [prod.prodID, prod.prodName, prod.prodDesc, prod.prodPrice, prod.prodWeight, prod.catID], (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(results);
+            });
         });
-    });
+    }
 };
 
 shopdb.updateProduct = (id, prod) => {
