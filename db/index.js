@@ -133,6 +133,17 @@ shopdb.addOrder = (order) => {
     });
 };
 
+shopdb.updateOrderStatus = (orderID, statusID) => {
+    return new Promise((resolve, reject) => {
+        let sql = `UPDATE orders SET status_id = ${statusID} WHERE id = ${orderID};`;
+        pool.query(sql, [orderID, statusID], (err, results) => {
+            if(err) {
+                return reject(err);
+            }
+            return resolve(results);
+        });
+    });
+};
 
 shopdb.allStatus = () => {
     return new Promise((resolve, reject) => {
