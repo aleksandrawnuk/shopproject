@@ -135,14 +135,35 @@ shopdb.addOrder = (order) => {
 
 shopdb.updateOrderStatus = (orderID, statusID) => {
     return new Promise((resolve, reject) => {
-        let sql = `UPDATE orders SET status_id = ${statusID} WHERE id = ${orderID};`;
-        pool.query(sql, [orderID, statusID], (err, results) => {
+        let sqlOrderID = `SELECT * FROM orders WHERE id = ${orderID};`
+        pool.query(sqlOrderID, [orderID], (err, results) => {
+            if(results[0] == null) {
+                //return reject(err);
+                return resolve("No order to update");
+            }
             if(err) {
                 return reject(err);
             }
-            return resolve(results);
+            let sqlStatus = `SELECT status_id FROM orders WHERE id = ${orderID};`;
+            pool.query(sqlStatus, [orderID], (err, results) => {
+                // status can't be changed backwards, status can't be changed from cancelled
+                if(results[0].status_id > statusID || results[0].status_id == 3) {
+                    return reject(err);
+                }
+                if(err) {
+                    return reject(err);
+                }
+                let sql = `UPDATE orders SET status_id = ${statusID} WHERE id = ${orderID};`;
+                pool.query(sql, [orderID, statusID], (err, results) => {
+                    if(err) {
+                        return reject(err);
+                    }
+                    return resolve(results);
+                });
+            });
         });
-    });
+        
+    });    
 };
 
 shopdb.allStatus = () => {

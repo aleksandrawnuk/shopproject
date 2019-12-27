@@ -92,10 +92,12 @@ router.post('/orders', async (req, res, next) => {
 router.put('/orders/:orderID', async (req, res, next) => {
     try {
         let results = await db.updateOrderStatus(req.params.orderID, req.body.statusID);
-        res.send('Order status updated successfully');
+        res.json(results);
+        //res.send('Order status updated successfully');
     } catch (e) {
         console.log(e);
-        res.sendStatus(500);
+        res.send(e);
+        //res.sendStatus(500);
     }
 });
 
