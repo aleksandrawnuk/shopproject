@@ -212,7 +212,7 @@ shopdb.addOrder = (order) => {
                         "Correct format": constants.correctOrderJSON
                     });
                 }
-                console.log(validation.passes());
+                // console.log(validation.passes());
                 let sqlOrderline = `CALL addOrderline(@nextOrderID, ${order.orderlines.productID[i]}, ${order.orderlines.quantity[i]}); `;
                 sqlLines += sqlOrderline;
             }
