@@ -13,7 +13,7 @@ router.get('/products', async (req, res, next) => {
         res.json(results);
     } catch(e) {
         console.log(e);
-        res.sendStatus(500);
+        res.status(500).send(e);
     }
 });
 
@@ -23,7 +23,7 @@ router.get('/products/:id', async (req, res, next) => {
         res.json(results);
     } catch(e) {
         console.log(e);
-        res.sendStatus(500);
+        res.status(500).send(e);
     }
 });
 
@@ -43,7 +43,7 @@ router.put('/products/:id', async (req, res, next) => {
         res.send('Updated successfully');
     } catch(e) {
         console.log(e);
-        res.sendStatus(500);
+        res.status(500).send(e);
     }
 });
 
@@ -53,7 +53,7 @@ router.get('/categories', async (req, res, next) => {
         res.json(results);
     } catch(e) {
         console.log(e);
-        res.sendStatus(500);
+        res.status(500).send(e);
     }
 });
 
@@ -63,7 +63,7 @@ router.get('/orders', async (req, res, next) => {
         res.json(results);
     } catch(e) {
         console.log(e);
-        res.sendStatus(500);
+        res.status(500).send(e);
     }
 });
 
@@ -73,7 +73,7 @@ router.get('/orders/status/:id', async (req, res, next) => {
         res.json(results);
     } catch(e) {
         console.log(e);
-        res.sendStatus(500);
+        res.status(500).send(e);
     }
 });
 
@@ -84,7 +84,7 @@ router.post('/orders', async (req, res, next) => {
        // res.send('Added successfully');
     } catch(e) {
         console.log(e);
-        res.sendStatus(500);
+        res.status(500).send(e);
     }
 });
 
@@ -96,7 +96,7 @@ router.put('/orders/:orderID', async (req, res, next) => {
     } catch (e) {
         console.log(e);
         res.send(e);
-        //res.sendStatus(500);
+        //res.status(500).send(e);
     }
 });
 
@@ -106,7 +106,7 @@ router.get('/status', async (req, res, next) => {
         res.json(results);
     } catch(e) {
         console.log(e);
-        res.sendStatus(500);
+        res.status(500).send(e);
     }
 });
 
