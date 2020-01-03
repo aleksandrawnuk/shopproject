@@ -37,6 +37,9 @@ shopdb.oneProduct = (id) => {
             if(err) {
                 return reject(err);
             }
+            if(results.length <= 0) {
+                return reject({ Errors: { id: [ 'Product id does not exist' ] }, "Correct format": constants.correctProductJSON});
+            }
             return resolve(results[0]);
         });
     });
