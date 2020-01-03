@@ -1,3 +1,5 @@
+var constants = require('../constatnts.js');
+
 var dotenv = require('dotenv').config();
 const mysql = require('mysql');
 let Validator = require('validatorjs');
@@ -40,34 +42,45 @@ shopdb.oneProduct = (id) => {
     });
 };
 
-shopdb.addProduct = (prod) => {
-    let rules = {
-        prodID: 'required',
-        prodName: 'required',
-        prodDesc: 'required',
-        prodPrice: 'min:0.01',
-        prodWeight: 'min:0.01',
-        catID: 'required'
-    };
-
-    let validation = new Validator(prod, rules);
-
-    console.log(validation.passes());
-    if(validation.fails()) {
-        throw (validation.errors)
-    } else {
-
+shopdb.addProduct = async (prod) => {
         return new Promise((resolve, reject) => {
-            let sql = `CALL addOrUpdateProduct(${prod.prodID}, "${prod.prodName}", "${prod.prodDesc}", ${prod.prodPrice}, ${prod.prodWeight}, ${prod.catID});`
-            pool.query(sql, [prod.prodID, prod.prodName, prod.prodDesc, prod.prodPrice, prod.prodWeight, prod.catID], (err, results) => {
+            let rules = {
+                prodID: 'required',
+                prodName: 'required',
+                prodDesc: 'required',
+                prodPrice: 'min:0.01',
+                prodWeight: 'min:0.01',
+                catID: 'required'
+            };
+
+            let validation = new Validator(prod, rules);
+
+            if (validation.fails()) {
+                validation.errors.add("Correct format", constants.correctProductJSON);
+                throw (validation.errors)
+            }
+
+            let sqlCategoryID = `SELECT * FROM categories WHERE id = ${prod.catID};`
+            pool.query(sqlCategoryID, [], (err, results) => {
+                // console.log(results);
+                if (results[0] == null) {
+                    return reject({ Errors: { catID: [ 'Category does not exist' ] }, "Correct format": constants.correctProductJSON});
+                }
                 if (err) {
                     return reject(err);
                 }
-                return resolve(results);
+
+                let sql = `CALL addOrUpdateProduct(${prod.prodID}, "${prod.prodName}", "${prod.prodDesc}", ${prod.prodPrice}, ${prod.prodWeight}, ${prod.catID});`
+                pool.query(sql, [prod.prodID, prod.prodName, prod.prodDesc, prod.prodPrice, prod.prodWeight, prod.catID], (err, results) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    return resolve(results);
+                });
             });
         });
-    }
-};
+
+}
 
 shopdb.updateProduct = (id, prod) => {
     return new Promise((resolve, reject) => {

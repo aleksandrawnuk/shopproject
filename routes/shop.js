@@ -33,8 +33,7 @@ router.post('/products', async (req, res, next) => {
         res.send('Added successfully');
     } catch(e) {
         console.log(e);
-        res.send(e);
-        // res.sendStatus(500);
+        res.status(500).send(e);
     }
 });
 
